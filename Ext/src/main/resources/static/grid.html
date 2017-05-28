@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link rel="stylesheet" href="resources/theme-classic-all.css"></link>
+<script type="text/javascript" src="ext-all.js"></script>
+<script type="text/javascript">
+	var rowIndexSelected;
+	function getRow(rowIndex, grid) {
+		var cells = grid.getView().getRow(rowIndex).cells;
+		var columns = grid.columns;
+		var columnIds = new Array();
+		for (var i = 0; i < columns.length; i++) {
+			columnIds.push(columns[i].dataIndex);
+		}
+		var row = {};
+		for (var i = 0; i < cells.length; i++) {
+			row[columnIds[i]] = cells[i].innerText;
+			console.info(cells[i].innerText);
+		}
+		return row;
+	}
+	function print(object) {
+		for (var i in object) {
+			alert(i + ' : ' + object[i]);
+		}
+	}
+	function createGrid(selectRowCallBackFunction) {
+		Ext.define('User', {
+		    extend: 'Ext.data.Model',
+		    fields: [ 'name', 'email', 'phone' ]
+		});
+		var userStore = Ext.create('Ext.data.Store', {
+		    model: 'User',
+		    data: [
+		        { name: 'Lisa', email: 'lisa@simpsons.com', phone: '555-111-1224' },
+		        { name: 'Bart', email: 'bart@simpsons.com', phone: '555-222-1234' },
+		        { name: 'Homer', email: 'homer@simpsons.com', phone: '555-222-1244' },
+		        { name: 'Marge', email: 'marge@simpsons.com', phone: '555-222-1254' }
+		    ]
+		});
+		var grid = Ext.create('Ext.grid.Panel', {
+		    renderTo: document.body,
+		    store: userStore,
+		    width: 400,
+		    height: 200,
+		    title: 'Application Users',
+		    columns: [
+		        {
+		            text: 'Name',
+		            width: 100,
+		            sortable: false,
+		            hideable: false,
+		            dataIndex: 'name'
+		        },
+		        {
+		            text: 'Email Address',
+		            width: 150,
+		            dataIndex: 'email',
+		        },
+		        {
+		            text: 'Phone Number',
+		            flex: 1,
+		            dataIndex: 'phone'
+		        }
+		    ],
+		    listeners : {
+		    	selectionchange : function(current, selected, eOpts) {
+		    		rowIndexSelected = selected[0].internalId - 1;
+		    		selectRowCallBackFunction.call();
+		    	}
+		    }
+		});
+		return grid;
+	}
+	Ext.onReady(function () {
+		var grid = createGrid(function() {
+			var row = getRow(rowIndexSelected, grid);
+			print(row);
+		});
+	});
+</script>
+</head>
+<body>
+</body>
+</html>
