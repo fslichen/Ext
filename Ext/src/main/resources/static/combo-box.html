@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link rel="stylesheet" href="resources/theme-classic-all.css"></link>
+<script type="text/javascript" src="ext-all.js"></script>
+<script type="text/javascript">
+	Ext.onReady(function() {
+		var states = Ext.create('Ext.data.Store', {
+			fields : [ 'abbr', 'name' ],
+			data : [ {
+				"abbr" : "AL",
+				"name" : "Alabama"
+			}, {
+				"abbr" : "AK",
+				"name" : "Alaska"
+			}, {
+				"abbr" : "AZ",
+				"name" : "Arizona"
+			}
+			]
+		});
+		Ext.create('Ext.form.ComboBox', {
+			fieldLabel : 'Choose State',
+			store : states,
+			queryMode : 'local',
+			displayField : 'name',
+			valueField : 'abbr',
+			itemId : 'anyComboBox',
+			renderTo : Ext.getBody(),
+			listeners : {
+				select : function(currentObject) {
+					alert(currentObject.value); // This is the true value rather than the label.
+				}, 
+				change : function(currentObject) {
+					alert(currentObject.value); // This is the true value rather than the label.
+				}
+			}
+		});
+		// You can set the true value in the combox box, and then the label will show up in the combo box.
+		Ext.ComponentQuery.query('[itemId=anyComboBox]')[0].setValue('AK');
+	});
+</script>
+</head>
+<body>
+</body>
+</html>
